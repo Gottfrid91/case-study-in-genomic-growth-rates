@@ -1,3 +1,5 @@
+#genomics tutorial for ideas: http://varianceexplained.org/r/tidy-genomics/
+
 #case study I
 #load packages
 library(data.table)
