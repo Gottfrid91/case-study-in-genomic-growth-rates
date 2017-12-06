@@ -20,15 +20,19 @@ genotype <- as.data.table(read.delim(genotype_file))
 head(genotype,1)
 dim(genotype)
 colnames(genotype)
+unique(genotype$strain)
 
 #transforming to long format
 genotype_long <- melt(data = genotype, id.vars = "strain")
+
 #rename columns
 setnames(genotype_long, c("variable", "value"), c("Genotype", "value"))
+
 #check dim
 head(genotype_long)
 dim(genotype_long)
 unique(genotype_long$Genotype)
+
 #plot most commom genotype value in yeast
 ggplot(data=genotype_long, aes(value)) + stat_count()
 
@@ -37,10 +41,13 @@ ggplot(data=genotype_long, aes(value)) + stat_count()
 #first look at data properties - growth
 head(growth)
 dim(growth)
-colnames(growth)
 
 #creating a column with avarge growth
 growth[,avarage_growth := sum(YPD,YPD_BPS,YPD_Rapa,YPE,YPMalt, na.rm = TRUE)/length(growth), by = strain]
+
+#make into tidy format
+growth_long <- melt(data = growth, id.vars = c("strain", "avarage_growth"))
+setnames(growth_long,c("variable", "value"), c("Nutrition", "growth_rate"))
 
 #check columns
 head(growth)
