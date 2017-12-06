@@ -1,3 +1,6 @@
+#plots: http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html
+#idea:http://varianceexplained.org/r/tidy-genomics/
+
 #case study I
 #load packages
 library(data.table)
