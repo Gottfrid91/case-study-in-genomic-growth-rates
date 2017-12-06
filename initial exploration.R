@@ -1,5 +1,3 @@
-#genomics tutorial for ideas: http://varianceexplained.org/r/tidy-genomics/
-
 #case study I
 #load packages
 library(data.table)
@@ -28,8 +26,9 @@ genotype_long <- melt(data = genotype, id.vars = "strain")
 #rename columns
 setnames(genotype_long, c("variable", "value"), c("Genotype", "value"))
 #check dim
+head(genotype_long)
 dim(genotype_long)
-
+unique(genotype_long$Genotype)
 #plot most commom genotype value in yeast
 ggplot(data=genotype_long, aes(value)) + stat_count()
 
@@ -55,5 +54,13 @@ ggplot(data = growth, aes(avarage_growth)) + geom_dotplot()
 head(marker)
 dim(marker)
 colnames(marker)
+unique(marker$chrom)
+marker[, length := (end-start+1)]
+
+#max/min length
+marker[, .(max = max(length), min = min(length))]
+
+#plot distribution of lengths of all markers
+ggplot(data = marker, aes(length)) + geom_density()
 
 #idea: add length of marker and see if it correlates with any growth rate informmation
