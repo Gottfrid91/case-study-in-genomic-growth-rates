@@ -3,9 +3,10 @@
 library(data.table)
 library(tidyverse)
 library(magrittr)
+library(ggplot2)
 
 #set data dir
-DATA_DIR <- c('/home/olle/Documents/University Courses/Data analysis and vizulisation/Data visualization in R/exercises&lectures/data')
+DATA_DIR <- c('/home/salma/Desktop/case-study-1/')
 
 marker_file <- file.path(DATA_DIR, 'marker.txt')
 growth_file <- file.path(DATA_DIR, 'growth.txt')
