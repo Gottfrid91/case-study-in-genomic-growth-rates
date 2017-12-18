@@ -60,6 +60,21 @@ ggplot(data = avg_n_merkers_long, aes(x=variable, y=value,fill = Genome)) + geom
   geom_errorbar(aes(ymax=value + sd_n_merkers_long$value, ymin=value - sd_n_merkers_long$value), position = "dodge") +
   outlook +ylab("Growth") + xlab("") + ggtitle("Average growth for all markers per environment and genome")
 
+# markers/genome medians
+medians <- base_2_long[, lapply(.SD, median, na.rm = TRUE),
+                       .SDcols = c("YPD", "YPD_BPS", "YPD_Rapa", "YPE", "YPMalt"),
+                       by = .(marker = variable, genome = value)]
+
+medians_diff <- medians[, lapply(.SD, subtract),
+                            .SDcols = c("YPD"),
+                            by = marker]
+
+ypd_diff <- medians[genome == "Wild isolate", YPD := -1 * YPD][, .(YPD = sum(YPD)), marker]
+ypd_bps_diff <- medians[genome == "Wild isolate", YPD_BPS := -1 * YPD_BPS][, .(YPD_BPS = sum(YPD_BPS)), marker]
+ypd_rapa_diff <- medians[genome == "Wild isolate", YPD_Rapa := -1 * YPD_Rapa][, .(YPD_Rapa = sum(YPD_Rapa)), marker]
+ype_diff <- medians[genome == "Wild isolate", YPE := -1 * YPE][, .(YPE = sum(YPE)), marker]
+ypmalt_diff <- medians[genome == "Wild isolate", YPMalt := -1 * YPMalt][, .(YPMalt = sum(YPMalt)), marker]
+
 # markers grid plot
 plots = lapply(392:400, function(.x) ggplot(growth, aes((genotype[, .x])[strain], YPMalt)) + geom_boxplot())
 do.call(grid.arrange,  plots)
