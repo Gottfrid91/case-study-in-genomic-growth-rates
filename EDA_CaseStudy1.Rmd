@@ -3,11 +3,12 @@ title: "Case Study 1: Exploratory Data Analysis Of DNA, RNA, environment, and fi
 output: html_notebook
 ---
 
+Course: Data Analysis and Visualization in R 
 Authors:
-* O
-* A
-* S
-* U
+* Farag, Salma
+* Gomes, Guilherme
+* Holmberg, Olle
+* Zafar, Atiqa
 
 This notebook contains Exploratory Data Analysis for Case Study 1. It summarizes the methods we have used to explore the genetics data set and investigate relationships between fitness of organism, genotype, gene expression and environment.
 
