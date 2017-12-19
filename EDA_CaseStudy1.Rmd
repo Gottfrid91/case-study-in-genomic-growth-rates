@@ -71,7 +71,6 @@ The fitness dataset contains the growth rate of each strain for 5 growth media. 
 ```{r}
 str(growth)
 ```
-
 We can visualize the growth rate of the yeast strains for the 5 media using box-plots to understand how the growth rate is distributed in each medium (environment) for strains.
 ```{r, fig.width=10, fig.height=6}
 #melt growth for plotting
@@ -90,7 +89,9 @@ ggplotly(p)
 
 Examining these box plots, we note that **the median growth rate of yeast strains in YPD(glucose) is more than the the median growth rate in other media.**
 
-Next, we can investigate *if genotype affects fitness* to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is.
+**Does Genotype affect Fitness?**
+
+Next, we can investigate if genotype affects fitness to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is.
 
 Let's begin by plotting the distribution of Cellular growth in maltose (YPMalt) for genotype at chr07, postion 1069229.
 ```{r, fig.width=10, fig.height=6}
@@ -154,7 +155,7 @@ ggplot(data = avg_n_merkers_long, aes(x=variable, y=value,fill = Genome)) + geom
 
 ```
 
-It's clear to us that this plot shows only the growth variation per environment and misses out the variation due to genotype.To follow up, we plot the median growth per marker in YPD.
+It's clear to us that this plot shows only the growth variation per environment and misses out the variation due to genotype.To follow up, we plot lineplots for the median growth per marker in YPD (Glucose) for each Genotype.
 
 ```{r, fig.width=10, fig.height=6}
 #adding all median in one table
@@ -178,8 +179,8 @@ ggplotly(p)
 ```
   
   ---
-  
-We can further look at he distribution of Cellular growth for different genetic markers in maltose (YPMalt). Note that we're keeping the environment/medium constant but varying the marker position.
+
+Here, we can look at the lineplots for the Wild Genotype and Lab Genotype respectively to visualize how the median growth per marker varies for each Genotype in the Glucose medium. To visualize these variations further, we can plot the whole distribution of Cellular growth for each genetic markers using box-plots. Note that we're keeping the environment/medium constant (maltose/YPMalt) but varying the marker position. 
 
 (DISCUSS!!
 Salma, how about we display the marker coordinates at xlab? 
@@ -212,8 +213,10 @@ do.call(grid.arrange,  plots)
 Here, we can note that **there are some genetic markers that associate with strong variations in cellular growth.**
 
   ---
+  
+**Does genotype affects fitness independently of Environment?**
 
-Next, we can investigate **if genotype affects fitness independently of Environment** to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is, irrespective of the surrounding environmental influences.
+Next, we can investigate if genotype affects fitness independently of Environment to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is, irrespective of the surrounding environmental influences.
 
 Let's begin by plotting the distribution of Cellular growth for genotype at chr07, postion 1069229.
 
@@ -308,7 +311,9 @@ str(gene)
 
 Note that we have four types of genes in total with 2 different novelity levels and 4 sources. 
 
-Firstly, Let's investigate **if the gene expression under genetic or environmental control**, and if it is more influenced by one or the other. For this, we can plot the RNA/Gene Expression for a particular segregant at a chromosome in different media. Take segregant 'seg_45C' in YPMalt (Maltose), YPE (Ethanol) and YPD_BPS (low iron) at Chromosome 01.
+ **Is the gene expression under genetic or environmental control?**
+ 
+Firstly, Let's investigate if the gene expression under genetic or environmental control, and if it is more influenced by one or the other. For this, we can plot the RNA/Gene Expression for a particular segregant at a chromosome in different media. Take segregant 'seg_45C' in YPMalt (Maltose), YPE (Ethanol) and YPD_BPS (low iron) at Chromosome 01.
 
 ```{r, fig.width=10, fig.height=6}
 #select columns
