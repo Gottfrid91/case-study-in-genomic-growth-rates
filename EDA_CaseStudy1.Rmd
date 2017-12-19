@@ -1,17 +1,16 @@
 ---
-title: 'Case Study 1: Exploratory Data Analysis Of DNA, RNA, environment, and fitness'
-output:
-  html_document:
-    df_print: paged
+title: "Case Study 1: Exploratory Data Analysis Of DNA, RNA, environment, and fitness"
+output: html_notebook
 ---
-
 Course: Data Analysis and Visualization in R 
 
 Authors:
-* Farag, Salma
-* Gomes, Guilherme
-* Holmberg, Olle
-* Zafar, Atiqa
+
+  * Farag, Salma
+  * Gomes, Guilherme
+  * Holmberg, Olle
+  * Zafar, Atiqa
+
 
 This notebook contains Exploratory Data Analysis for Case Study 1. It summarizes the methods we have used to explore the genetics data set and investigate relationships between fitness of organism, genotype, gene expression and environment.
 
@@ -25,6 +24,8 @@ For the Genotype analysis, we are given genetic and fitness data for 185 yeast s
 
 **Load and examine the Genotype and Fitness Dataset**
 ```{r}
+options(warn=-1)
+
 #load packages
 library(data.table)
 library(magrittr)
@@ -34,10 +35,8 @@ library(grid)
 library(plotly)
 library(dplyr)
 
-options(warn=-1)
-
 #set data dir
-DATA_DIR <- c('/home/salma/Desktop/case-study-1/')
+DATA_DIR <- c('C:/Users/User/Desktop/DATR-CaseStudy-1/')
 
 marker_file <- file.path(DATA_DIR, 'marker.txt')
 growth_file <- file.path(DATA_DIR, 'growth.txt')
@@ -182,6 +181,9 @@ p <- ggplot(data = med, aes(x = ID, y = MEDIAN_YPD, color = Genome)) +
 
 ggplotly(p)
 ```
+
+
+
 Here, we can look at the lineplots for the Wild Genotype and Lab Genotype respectively to visualize how the median growth per marker varies for each Genotype in the Glucose medium. To visualize these variations further, we can plot the whole distribution of Cellular growth for each genetic markers using box-plots. Note that we're keeping the environment/medium constant (maltose/YPMalt) but varying the marker position. 
 
 ```{r, fig.width=10, fig.height=6}
@@ -373,4 +375,13 @@ ggplotly(p)
 ```
 
 Note how the color (RNA value) changes over Genes, showing that the amount of RNA produced at each gene differ and is under genetic control. The color (RNA Value) also changes from one medium to another for any given gene, and is therefore under environment control as well. We conclude from the plot that the RNA value differs more per gene than per medium, showing that **transcription is affected more by genetic than environmental influences for chromosome 01 of segregant 47C**.
+
+
+**CONCLUSION**
+
+
+<your para here>
+
+Moreover, note that the overall fitness is the outcome of complicated molecular processes occurring in cells. Through our analysis of gene expression dataset, we have found out that the molecular process transcription is under both the genetic and environmental influence. For any given environment, the amount of RNA produced will vary drastically from gene to gene due to genotype. And for any given gene, this amount will also vary from one environment to another.
+
 
