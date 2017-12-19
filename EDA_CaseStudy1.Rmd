@@ -281,7 +281,7 @@ expression_file <- file.path(DATA_DIR, 'expression.txt')
 
 #read in data
 gene <- read.delim(gene_file)
-expression <- read.delim(expression_file)
+expression <- fread(expression_file)
 
 ```
 
