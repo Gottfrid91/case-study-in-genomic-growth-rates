@@ -381,7 +381,7 @@ Note how the color (RNA value) changes over Genes, showing that the amount of RN
 **CONCLUSION**
 
 
-<your para here>
+//your para here
 
 Moreover, note that the overall fitness is the outcome of complicated molecular processes occurring in cells. Through our analysis of gene expression dataset, we have found out that the molecular process transcription is under both the genetic and environmental influence. For any given environment, the amount of RNA produced will vary drastically from gene to gene due to genotype. And for any given gene, this amount will also vary from one environment to another.
 
