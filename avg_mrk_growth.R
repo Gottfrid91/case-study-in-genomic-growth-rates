@@ -65,16 +65,41 @@ medians <- base_2_long[, lapply(.SD, median, na.rm = TRUE),
                        .SDcols = c("YPD", "YPD_BPS", "YPD_Rapa", "YPE", "YPMalt"),
                        by = .(marker = variable, genome = value)]
 
-medians_diff <- medians[, lapply(.SD, subtract),
-                            .SDcols = c("YPD"),
-                            by = marker]
+medians$genome <- gsub(" ", "_", medians$genome)
 
-ypd_diff <- medians[genome == "Wild isolate", YPD := -1 * YPD][, .(YPD = sum(YPD)), marker]
-ypd_bps_diff <- medians[genome == "Wild isolate", YPD_BPS := -1 * YPD_BPS][, .(YPD_BPS = sum(YPD_BPS)), marker]
-ypd_rapa_diff <- medians[genome == "Wild isolate", YPD_Rapa := -1 * YPD_Rapa][, .(YPD_Rapa = sum(YPD_Rapa)), marker]
-ype_diff <- medians[genome == "Wild isolate", YPE := -1 * YPE][, .(YPE = sum(YPE)), marker]
-ypmalt_diff <- medians[genome == "Wild isolate", YPMalt := -1 * YPMalt][, .(YPMalt = sum(YPMalt)), marker]
+ypd_diff <- dcast(medians, marker ~ genome, value.var = "YPD") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ypd_diff$Diff = abs(ypd_diff$Diff)
+ypd_diff <- as.data.table(ypd_diff)
+
+ypd_bps_diff <- dcast(medians, marker ~ genome, value.var = "YPD_BPS") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ypd_bps_diff$Diff = abs(ypd_bps_diff$Diff)
+as.data.table(ypd_bps_diff)
+
+ydp_rapa_diff <- dcast(medians, marker ~ genome, value.var = "YPD_Rapa") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ydp_rapa_diff$Diff = abs(ydp_rapa_diff$Diff)
+as.data.table(ypd_rapa_diff)
+
+ype_diff <- dcast(medians, marker ~ genome, value.var = "YPE") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ype_diff$Diff = abs(ype_diff$Diff)
+as.data.table(ype_diff)
+
+ypmalt_diff <- m<- dcast(medians, marker ~ genome, value.var = "YPMalt") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ypmalt_diff$Diff = abs(ypmalt_diff$Diff)
+as.data.table(ypmalt_diff)
+
+ggplot(ypd_diff[Diff > 4*mean(Diff)], aes(marker, Diff)) + geom_col()
 
 # markers grid plot
 plots = lapply(392:400, function(.x) ggplot(growth, aes((genotype[, .x])[strain], YPMalt)) + geom_boxplot())
 do.call(grid.arrange,  plots)
+
