@@ -30,6 +30,9 @@ marker <- read.delim(marker_file)
 growth <- read.delim(growth_file)
 genotype <- read.delim(genotype_file)
 
+#set standard plotting style
+outlook <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.background = element_blank(), axis.line = element_line(colour = "black"))
 ```
 
 Let's have a first look at a summary of the columns in the genotype file:
@@ -68,7 +71,7 @@ growth.m <- melt(growth, id.var = "strain")
 p <- ggplot(growth.m, aes(x=variable, y=value)) + 
   geom_boxplot() + 
   xlab("") + ylab("Growth Rate") +
-  ggtitle("Growth Rate by Media")
+  ggtitle("Growth Rate by Media") + outlook
 
 ggplotly(p)
 
@@ -90,7 +93,7 @@ names(mygeno) <- genotype$strain
 ggplot(data = growth , aes(x=mygeno, y=YPMalt)) + 
   geom_boxplot()   +   
   xlab("Genotype") + ylab("Growth Rate") +
-  ggtitle("Growth in YPMalt (Maltose) for Genotype at Chr07, position 1069229 ")
+  ggtitle("Growth in YPMalt (Maltose) for Genotype at Chr07, position 1069229 ") + outlook
 
 ```
 
@@ -134,10 +137,6 @@ setnames(avg_nutrition_markers, old = 2:6, new = c("AVG_YPD","AVG_APD_BPS","AVG_
 avg_n_merkers_long <- melt(avg_nutrition_markers, id.vars = "Genome")
 sd_n_merkers_long <- melt(sd_nutrition_markers, id.vars = "Genome")
 
-#set style
-outlook <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                 panel.background = element_blank(), axis.line = element_line(colour = "black"))
-
 #plot
 ggplot(data = avg_n_merkers_long, aes(x=variable, y=value,fill = Genome)) + geom_col(position = "dodge") + 
   geom_errorbar(aes(ymax=value + sd_n_merkers_long$value, ymin=value - sd_n_merkers_long$value), position = "dodge") +
@@ -166,7 +165,7 @@ setnames(med, old = c("variable","value", "V1"), new=c("ID","Genome","MEDIAN_YPD
 #Plotting median growth per marker in YPD
 p <- ggplot(data = med, aes(x = ID, y = MEDIAN_YPD, color = Genome)) +       
   geom_line(aes(group = Genome)) + ylab("Median Growth Rate") + xlab("Genetic Markers") +
-  ggtitle("Median growth per genetic markers in YPD (Glucose)")
+  ggtitle("Median growth per genetic markers in YPD (Glucose)") + outlook
 
 ggplotly(p)
 ```
@@ -220,8 +219,6 @@ growth_dt <- as.data.table(growth)
 #style specifications
 pbox <- geom_boxplot() 
 x_lab <- xlab("") 
-outlook <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                 panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 ##create plot for grid
 p1 <- ggplot(data = growth , aes(x=mygeno, y=YPD)) + pbox  + x_lab +outlook
