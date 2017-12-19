@@ -34,6 +34,8 @@ library(grid)
 library(plotly)
 library(dplyr)
 
+options(warn=-1)
+
 #set data dir
 DATA_DIR <- c('/home/salma/Desktop/case-study-1/')
 
@@ -182,11 +184,6 @@ ggplotly(p)
 ```
 Here, we can look at the lineplots for the Wild Genotype and Lab Genotype respectively to visualize how the median growth per marker varies for each Genotype in the Glucose medium. To visualize these variations further, we can plot the whole distribution of Cellular growth for each genetic markers using box-plots. Note that we're keeping the environment/medium constant (maltose/YPMalt) but varying the marker position. 
 
-(DISCUSS!!
-Salma, how about we display the marker coordinates at xlab? 
-+ declutter the plot by using color to show lab vs wild maybe?
-+ Title?)
-
 ```{r, fig.width=10, fig.height=6}
 
 # markers/genome medians
@@ -196,27 +193,64 @@ medians <- base_long[, lapply(.SD, median, na.rm = TRUE),
 
 medians$genome <- gsub(" ", "_", medians$genome)
 
-ypd_diff <- dcast(medians, marker ~ genome, value.var = "YPD") %>%
+ypmalt_diff <- m<- dcast(medians, marker ~ genome, value.var = "YPMalt") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
   select(marker, Diff)
-ypd_diff$Diff = abs(ypd_diff$Diff)
-ypd_diff <- as.data.table(ypd_diff)
+ypmalt_diff$Diff = abs(ypmalt_diff$Diff)
+ypmalt_diff <- as.data.table(ypmalt_diff)
 
 # compute affected markers
-markers_affected_by_genotype <- ypd_diff[Diff > 4.5*mean(Diff)]
+markers_affected_by_genotype <- ypmalt_diff[Diff > 4.5*mean(Diff)]
 setnames(markers_affected_by_genotype, "marker", "id")
 
 query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
 
 # markers grid plot
 plots = lapply(query_markers$id,
-               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPD)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "marker ",.x)))
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPMalt)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "Marker ",.x)))
 do.call(grid.arrange,  plots)
 
 ```
 
-Here, we can note that **there are some genetic markers that associate with strong variations in cellular growth.**
+Here, we can note that **wild isolates** show a clear advantage over **lab strains** in some markers and contribute to more growth in a strain, specially in **YPMalt** than any other enviroment.
 
+```{r, fig.width=10, fig.height=6}
+ypd_diff <- dcast(medians, marker ~ genome, value.var = "YPD") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ypd_diff$Diff = abs(ypd_diff$Diff)
+ypd_diff <- as.data.table(ypd_diff)
+
+ype_diff <- dcast(medians, marker ~ genome, value.var = "YPE") %>%
+  mutate(Diff = Wild_isolate - Lab_strain) %>% 
+  select(marker, Diff)
+ype_diff$Diff = abs(ype_diff$Diff)
+ype_diff <- as.data.table(ype_diff)
+
+# compute affected markers
+markers_affected_by_genotype <- ypd_diff[Diff > 4.1*mean(Diff)]
+setnames(markers_affected_by_genotype, "marker", "id")
+
+query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
+
+# markers grid plot
+plots = lapply(query_markers$id,
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPD)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "Marker ",.x)))
+do.call(grid.arrange,  plots)
+
+# compute affected markers
+markers_affected_by_genotype <- ype_diff[Diff > 3.5*mean(Diff)]
+setnames(markers_affected_by_genotype, "marker", "id")
+
+query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
+
+# markers grid plot
+plots = lapply(query_markers$id,
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPE)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "Marker ",.x)))
+do.call(grid.arrange,  plots)
+```
+
+When querying to get the markers with the highest performance difference between the wild isolates and lab strains, it came to our attention that the environments **YPD** and **YPE** have a very similar effect on growth and correlate positively with markers like: **10675**, **10688**, **10702**, **10715**, **10728** and **10755** being affected by the genotype the most and by roughly the same amount.
   ---
   
 **Does genotype affects fitness independently of Environment?**

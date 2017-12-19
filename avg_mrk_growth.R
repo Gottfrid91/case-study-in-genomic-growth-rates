@@ -100,12 +100,13 @@ ypmalt_diff$Diff = abs(ypmalt_diff$Diff)
 ypmalt_diff <- as.data.table(ypmalt_diff)
 
 # compute affected markers
-markers_affected_by_genotype <- ypd_bps_diff[Diff > 5.5*mean(Diff)]
+markers_affected_by_genotype <- ypd_bps_diff[Diff > 5.36*mean(Diff)]
 setnames(markers_affected_by_genotype, "marker", "id")
 
 query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
 
 # markers grid plot
-plots = lapply(query_markers$id, function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPD_BPS)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "marker ",.x)))
+plots = lapply(query_markers$id,
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPD_BPS)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "marker ",.x)))
 do.call(grid.arrange,  plots)
 
