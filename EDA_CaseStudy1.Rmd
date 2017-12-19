@@ -383,7 +383,7 @@ Note how the color (RNA value) changes over Genes, showing that the amount of RN
 
 **CONCLUSION**
 
-We can conclude that *genotype certainly affects fitness* but there are only certain genetic markers that associate with variations in cellular growth. Moreover, these growth variations have a *strong environment-specific pattern*, that is, some markers show growth variation in one environment but not in others due to genotype. Our Exploratory Data Analysis with the Genotype dataset shows
+We can conclude that **genotype certainly affects fitness** but there are only certain genetic markers that associate with variations in cellular growth. Moreover, these growth variations have a **strong environment-specific pattern**, that is, some markers show growth variation in one environment but not in others due to genotype. Our Exploratory Data Analysis with the Genotype dataset shows
 
 * YPD (peptone dextrose) is the most suitable environment for growth. 
 * The Wild Genotype has significant growth in YPMalt (Maltose) compared to all other media (including YPD (peptone dextrose) )
