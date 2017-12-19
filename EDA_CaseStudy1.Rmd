@@ -4,6 +4,7 @@ output: html_notebook
 ---
 
 Course: Data Analysis and Visualization in R 
+
 Authors:
 * Farag, Salma
 * Gomes, Guilherme
