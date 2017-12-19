@@ -206,7 +206,7 @@ Here, we can note that **there are some genetic markers that associate with stro
 
   ---
 
-Next, we can investigate *if genotype affects fitness independently of Environment* to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is, irrespective of the surrounding environmental influences.
+Next, we can investigate **if genotype affects fitness independently of Environment** to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is, irrespective of the surrounding environmental influences.
 
 Let's begin by plotting the distribution of Cellular growth for genotype at chr07, postion 1069229.
 
@@ -305,7 +305,7 @@ str(gene)
 
 Note that we have four types of genes in total with 2 different novelity levels and 4 sources. 
 
-Firstly, Let's investigate if the gene expression under genetic or environmental control, and if it is more influenced by one or the other. For this, we can plot the RNA/Gene Expression for a particular segregant at a chromosome in different media. Take segregant 'seg_45C' in YPMalt (Maltose), YPE (Ethanol) and YPD_BPS (low iron) at Chromosome 01.
+Firstly, Let's investigate **if the gene expression under genetic or environmental control**, and if it is more influenced by one or the other. For this, we can plot the RNA/Gene Expression for a particular segregant at a chromosome in different media. Take segregant 'seg_45C' in YPMalt (Maltose), YPE (Ethanol) and YPD_BPS (low iron) at Chromosome 01.
 
 ```{r}
 #select columns
@@ -325,5 +325,5 @@ ggplot(heat_map_long, aes(x=rown , y=variable)) +
 
 ```
 
-Note how the color (RNA value) changes over Genes, showing that the amount of RNA produced at each gene differ. The color (RNA Value) also changes from one medium to another for any given gene. It can also be clearly seen that the RNA value differs more per gene than per medium, showing that transcription is affected more by genetic than environmental influences for chromosome 01 of segregant 47C.
+Note how the color (RNA value) changes over Genes, showing that the amount of RNA produced at each gene differ and is under genetic control. The color (RNA Value) also changes from one medium to another for any given gene, and is therefore under environment control as well. It can also be clearly seen that the RNA value differs more per gene than per medium, showing that **transcription is affected more by genetic than environmental influences for chromosome 01 of segregant 47C**.
 
