@@ -5,6 +5,7 @@ library(tidyverse)
 library(magrittr)
 library(ggplot2)
 library(gridExtra)
+library(dplyr)
 
 #set data dir
 DATA_DIR <- c('/home/salma/Desktop/case-study-1/')
@@ -20,6 +21,7 @@ genotype <- read.delim(genotype_file)
 
 #convert to data table
 growth_dt <- as.data.table(growth)
+genotype_dt <- as.data.table(genotype)
 
 #merge for data for later plotting
 base <- merge(genotype_dt, growth)
@@ -61,7 +63,7 @@ ggplot(data = avg_n_merkers_long, aes(x=variable, y=value,fill = Genome)) + geom
   outlook +ylab("Growth") + xlab("") + ggtitle("Average growth for all markers per environment and genome")
 
 # markers/genome medians
-medians <- base_2_long[, lapply(.SD, median, na.rm = TRUE),
+medians <- base_long[, lapply(.SD, median, na.rm = TRUE),
                        .SDcols = c("YPD", "YPD_BPS", "YPD_Rapa", "YPE", "YPMalt"),
                        by = .(marker = variable, genome = value)]
 
@@ -83,7 +85,7 @@ ydp_rapa_diff <- dcast(medians, marker ~ genome, value.var = "YPD_Rapa") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
   select(marker, Diff)
 ydp_rapa_diff$Diff = abs(ydp_rapa_diff$Diff)
-as.data.table(ypd_rapa_diff)
+as.data.table(ydp_rapa_diff)
 
 ype_diff <- dcast(medians, marker ~ genome, value.var = "YPE") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
