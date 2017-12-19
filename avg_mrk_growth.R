@@ -79,29 +79,32 @@ ypd_bps_diff <- dcast(medians, marker ~ genome, value.var = "YPD_BPS") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
   select(marker, Diff)
 ypd_bps_diff$Diff = abs(ypd_bps_diff$Diff)
-as.data.table(ypd_bps_diff)
+ype_diff <- as.data.table(ypd_bps_diff)
 
 ydp_rapa_diff <- dcast(medians, marker ~ genome, value.var = "YPD_Rapa") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
   select(marker, Diff)
 ydp_rapa_diff$Diff = abs(ydp_rapa_diff$Diff)
-as.data.table(ydp_rapa_diff)
+ydp_rapa_diff <- as.data.table(ydp_rapa_diff)
 
 ype_diff <- dcast(medians, marker ~ genome, value.var = "YPE") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
   select(marker, Diff)
 ype_diff$Diff = abs(ype_diff$Diff)
-as.data.table(ype_diff)
+ype_diff <- as.data.table(ype_diff)
 
 ypmalt_diff <- m<- dcast(medians, marker ~ genome, value.var = "YPMalt") %>%
   mutate(Diff = Wild_isolate - Lab_strain) %>% 
   select(marker, Diff)
 ypmalt_diff$Diff = abs(ypmalt_diff$Diff)
-as.data.table(ypmalt_diff)
+ypmalt_diff <- as.data.table(ypmalt_diff)
 
-ggplot(ypd_diff[Diff > 4*mean(Diff)], aes(marker, Diff)) + geom_col()
+markers_affected_by_genotype <- ypd_diff[Diff > 4*mean(Diff)]
+setnames(markers_affected_by_genotype,"marker","id")
+
+query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
 
 # markers grid plot
-plots = lapply(392:400, function(.x) ggplot(growth, aes((genotype[, .x])[strain], YPMalt)) + geom_boxplot())
+plots = lapply(query_markers$id, function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPMalt)) + geom_boxplot() + xlab("Genotype") + ggtitle(.x))
 do.call(grid.arrange,  plots)
 
