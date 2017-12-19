@@ -177,9 +177,6 @@ p <- ggplot(data = med, aes(x = ID, y = MEDIAN_YPD, color = Genome)) +
 
 ggplotly(p)
 ```
-  
-  ---
-
 Here, we can look at the lineplots for the Wild Genotype and Lab Genotype respectively to visualize how the median growth per marker varies for each Genotype in the Glucose medium. To visualize these variations further, we can plot the whole distribution of Cellular growth for each genetic markers using box-plots. Note that we're keeping the environment/medium constant (maltose/YPMalt) but varying the marker position. 
 
 (DISCUSS!!
