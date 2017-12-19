@@ -19,7 +19,7 @@ Published: http://rpubs.com/atiqazafar/EDA_1
 
 **About the Genotype and Fitness Dataset**
 
-As for the Genotype analysis, we are given genetic and fitness data for 185 yeast strains. These strains are offsprings, or segregants, of a cross between two parental strains "Lab strain" and "Wild isolate".
+For the Genotype analysis, we are given genetic and fitness data for 185 yeast strains. These strains are offsprings, or segregants, of a cross between two parental strains "Lab strain" and "Wild isolate".
 
 **Load and examine the Genotype and Fitness Dataset**
 ```{r}
