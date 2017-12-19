@@ -253,6 +253,7 @@ do.call(grid.arrange,  plots)
 ```
 
 When querying to get the markers with the highest performance difference between the wild isolates and lab strains, it came to our attention that the environments **YPD** and **YPE** have a very similar effect on growth and correlate positively with markers like: **10675**, **10688**, **10702**, **10715**, **10728** and **10755** being affected by the genotype the most and by roughly the same amount.
+
   ---
   
 **Does genotype affects fitness independently of Environment?**
