@@ -5,6 +5,8 @@ output: html_notebook
 
 This notebook contains Exploratory Data Analysis for Case Study 1. It summarizes the methods we have used to explore the genetics data set and investigate relationships between fitness of organism, genotype, gene expression and environment.
 
+Published: http://rpubs.com/atiqazafar/EDA_1
+
   ---
 
 **About the Genotype and Fitness Dataset**
