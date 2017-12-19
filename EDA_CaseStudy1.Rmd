@@ -212,7 +212,7 @@ do.call(grid.arrange,  plots)
 
 ```
 
-Here, we can note that **wild isolates** show a clear advantage over **lab strains** in some markers and contribute to more growth in a strain, specially in **YPMalt** than any other enviroment.
+Here, we can note that wild isolates show a clear advantage over lab strains in some particular markers and contribute to more growth in a strain, specially in **YPMalt**, more than any other enviroment.
 
 ```{r, fig.width=10, fig.height=6}
 ypd_diff <- dcast(medians, marker ~ genome, value.var = "YPD") %>%
@@ -250,7 +250,8 @@ plots = lapply(query_markers$id,
 do.call(grid.arrange,  plots)
 ```
 
-When querying to get the markers with the highest performance difference between the wild isolates and lab strains, it came to our attention that the environments **YPD** and **YPE** have a very similar effect on growth and correlate positively with markers like: **10675**, **10688**, **10702**, **10715**, **10728** and **10755** being affected by the genotype the most and by roughly the same amount.
+By computing the differences between the growth medians for wild strains and lab isolates for every marker, we noticed that the genotype in the environments **YPD** and **YPE** had a very similar effect on growth specially with the markers: **10675**, **10688**, **10702**, **10715**, **10728** and **10755**.
+
   ---
   
 **Does genotype affects fitness independently of Environment?**
@@ -373,4 +374,7 @@ ggplotly(p)
 ```
 
 Note how the color (RNA value) changes over Genes, showing that the amount of RNA produced at each gene differ and is under genetic control. The color (RNA Value) also changes from one medium to another for any given gene, and is therefore under environment control as well. We conclude from the plot that the RNA value differs more per gene than per medium, showing that **transcription is affected more by genetic than environmental influences for chromosome 01 of segregant 47C**.
+ ---
+ 
+**Conclusion**
 
