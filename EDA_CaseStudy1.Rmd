@@ -1,16 +1,16 @@
 ---
-title: 'Case Study 1: Exploratory Data Analysis Of DNA, RNA, environment, and fitness'
-output:
-  html_document:
-    df_print: paged
+title: "Case Study 1: Exploratory Data Analysis Of DNA, RNA, environment, and fitness"
+output: html_notebook
 ---
 Course: Data Analysis and Visualization in R 
 
 Authors:
-* Farag, Salma
-* Gomes, Guilherme
-* Holmberg, Olle
-* Zafar, Atiqa
+
+  * Farag, Salma
+  * Gomes, Guilherme
+  * Holmberg, Olle
+  * Zafar, Atiqa
+
 
 This notebook contains Exploratory Data Analysis for Case Study 1. It summarizes the methods we have used to explore the genetics data set and investigate relationships between fitness of organism, genotype, gene expression and environment.
 
@@ -24,6 +24,8 @@ For the Genotype analysis, we are given genetic and fitness data for 185 yeast s
 
 **Load and examine the Genotype and Fitness Dataset**
 ```{r}
+options(warn=-1)
+
 #load packages
 library(data.table)
 library(magrittr)
@@ -33,10 +35,8 @@ library(grid)
 library(plotly)
 library(dplyr)
 
-options(warn=-1)
-
 #set data dir
-DATA_DIR <- c('/home/salma/Desktop/case-study-1/')
+DATA_DIR <- c('C:/Users/User/Desktop/DATR-CaseStudy-1/')
 
 marker_file <- file.path(DATA_DIR, 'marker.txt')
 growth_file <- file.path(DATA_DIR, 'growth.txt')
@@ -181,6 +181,10 @@ p <- ggplot(data = med, aes(x = ID, y = MEDIAN_YPD, color = Genome)) +
 
 ggplotly(p)
 ```
+
+
+
+
 Here, we can look at the lineplots for the Wild Genotype and Lab Genotype respectively to visualize how the median growth per marker varies for each Genotype in the Glucose medium. To visualize these variations further, we can plot the whole distribution of Cellular growth for each genetic markers using box-plots. Note that we're keeping the environment/medium constant (maltose/YPMalt) but varying the marker position. 
 
 ```{r, fig.width=10, fig.height=6}
@@ -211,7 +215,7 @@ do.call(grid.arrange,  plots)
 
 ```
 
-Here, we can note that wild isolates show a clear advantage over lab strains in some particular markers and contribute to more growth in a strain, specially in YPMalt (Maltose), more than any other enviroment.
+Here, we can note that **wild isolates** show a clear advantage over **lab strains** in some markers and contribute to more growth in a strain, specially in **YPMalt** than any other enviroment.
 
 ```{r, fig.width=10, fig.height=6}
 ypd_diff <- dcast(medians, marker ~ genome, value.var = "YPD") %>%
@@ -249,7 +253,7 @@ plots = lapply(query_markers$id,
 do.call(grid.arrange,  plots)
 ```
 
-By computing the differences between the growth medians for wild strains and lab isolates for every marker, we noticed that the genotype in the environments YPD (Peptone dextrose) and YPE (Ethanol) had a very similar effect on growth specially with the markers: **10675**, **10688**, **10702**, **10715**, **10728** and **10755**.
+When querying to get the markers with the highest performance difference between the wild isolates and lab strains, it came to our attention that the environments **YPD** and **YPE** have a very similar effect on growth and correlate positively with markers like: **10675**, **10688**, **10702**, **10715**, **10728** and **10755** being affected by the genotype the most and by roughly the same amount.
 
   ---
   
@@ -373,11 +377,18 @@ ggplotly(p)
 ```
 
 Note how the color (RNA value) changes over Genes, showing that the amount of RNA produced at each gene differ and is under genetic control. The color (RNA Value) also changes from one medium to another for any given gene, and is therefore under environment control as well. We conclude from the plot that the RNA value differs more per gene than per medium, showing that **transcription is affected more by genetic than environmental influences for chromosome 01 of segregant 47C**.
- ---
- 
+
+
+  ---
+
 **CONCLUSION**
 
+We can conclude that *genotype certainly affects fitness* but there are only certain genetic markers that associate with variations in cellular growth. Moreover, these growth variations have a *strong environment-specific pattern*, that is, some markers show growth variation in one environment but not in others due to genotype. Our Exploratory Data Analysis with the Genotype dataset shows
 
-To sum up, we can conclude that genotype does most certainly affect fitness, but only for specific markers, which also varies according to the environment. Furthermore, when genotype matters it is in favor of a wild isolate yeast strain most of the time. YPD (peptone dextrose) is overall the best environment for growth. However, in YPMalt (maltose), a wild strain has the most significant effect on growth in comparison to other environments including YPD (peptone dextrose). In addition to that, the same markers seem to have the same effect on growth in the environments YPD (peptone dextrose) and YPE (ethanol) and the reasons for this are definitely worth investigating.
+* YPD (peptone dextrose) is the most suitable environment for growth. 
+* The Wild Genotype has significant growth in YPMalt (Maltose) compared to all other media (including YPD (peptone dextrose) )
+* Some markers have noticable growth in both YPD (peptone dextrose) and YPE (ethanol). The Causes/Reasons behind such a pattern are definitely worth investigating.
 
-Moreover, note that the overall fitness is the outcome of complicated molecular processes occurring in cells. Through our analysis of gene expression dataset, we have found out that the molecular process transcription is under both the genetic and environmental influence. For any given environment, the amount of RNA produced will vary drastically from gene to gene due to genotype. And for any given gene, this amount will also vary from one environment to another.
+We further investigate the overall cellular growth as the outcome of complicated molecular processes occurring in cells. Through our analysis of gene expression dataset, we have found out that the molecular process **transcription is under both the genetic and environmental influence**. For any given environment, the amount of RNA produced will vary drastically from gene to gene due to genotype. And for any given gene, this amount will also vary from one environment to another.
+
+
