@@ -1,0 +1,326 @@
+---
+title: "Case Study 1: Exploratory Data Analysis Of DNA, RNA, environment, and fitness"
+output: html_notebook
+---
+
+This notebook contains Exploratory Data Analysis for Case Study 1. It summarizes the methods we have used to explore the genetics data set and investigate relationships between fitness of organism, genotype, gene expression and environment.
+
+Published: http://rpubs.com/atiqazafar/EDA_1
+
+  ---
+
+**About the Genotype and Fitness Dataset**
+
+As for the Genotype analysis, we are given genetic and fitness data for 185 yeast strains. These strains are offsprings, or segregants, of a cross between two parental strains "Lab strain" and "Wild isolate".
+
+**Load and examine the Genotype and Fitness Dataset**
+```{r}
+#load packages
+library(data.table)
+
+#set data dir
+DATA_DIR <- c('C:/Users/User/Desktop/DATR-CaseStudy-1/')
+
+marker_file <- file.path(DATA_DIR, 'marker.txt')
+growth_file <- file.path(DATA_DIR, 'growth.txt')
+genotype_file <- file.path(DATA_DIR, 'genotype.txt')
+
+#read in data
+marker <- read.delim(marker_file)
+growth <- read.delim(growth_file)
+genotype <- read.delim(genotype_file)
+
+#set standard plotting style
+outlook <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.background = element_blank(), axis.line = element_line(colour = "black"))
+```
+
+Let's have a first look at a summary of the columns in the genotype file:
+```{r}
+#str(genotype)
+dim(genotype)
+
+```
+
+Some key things to notice here are:
+
+* There are 158 rows or cases in the data set representing the yeast strains. 
+* The data set has 1001 variables or columns representing the genetic markers.
+* At each marker, the genotype values either "Lab strain" or "Wild isolate".
+
+Next, the markers file shows the genomic coordinates of the markers (chromosome, start, and stop). 
+```{r}
+str(marker)
+```
+
+The fitness dataset contains the growth rate of each strain for 5 growth media. The growth rate is measured as the nnumber of Generations per day. 
+```{r}
+str(growth)
+```
+
+We can visualize the growth rate of the yeast strains for the 5 media using box-plots to understand how the growth rate is distributed in each medium (environment) for strains.
+```{r}
+#load packages
+library(ggplot2)
+library(plotly)
+
+#melt growth for plotting
+growth.m <- melt(growth, id.var = "strain")
+
+#plot boxplot by media
+p <- ggplot(growth.m, aes(x=variable, y=value)) + 
+  geom_boxplot() + 
+  xlab("") + ylab("Growth Rate") +
+  ggtitle("Growth Rate by Media") + outlook
+
+ggplotly(p)
+
+```
+
+
+Examining these box plots, we note that **the median growth rate of yeast strains in YPD(glucose) is more than the the median growth rate in other media.**
+
+Next, we can investigate *if genotype affects fitness* to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is.
+
+Let's begin by plotting the distribution of Cellular growth in maltose (YPMalt) for genotype at chr07, postion 1069229.
+```{r}
+
+# genotype at chr07, postion 1069229
+mygeno <- genotype[, which(marker$chrom=="chr07" & marker$start== 1069229)]
+names(mygeno) <- genotype$strain
+
+# Growth in YPMalt (Maltose) 
+ggplot(data = growth , aes(x=mygeno, y=YPMalt)) + 
+  geom_boxplot()   +   
+  xlab("Genotype") + ylab("Growth Rate") +
+  ggtitle("Growth in YPMalt (Maltose) for Genotype at Chr07, position 1069229 ") + outlook
+
+```
+
+We can note that this particular genetic marker has a strong association between the genotype and  growth rate. 
+
+ ---
+
+(DISCUSS!!) To see an overall picture, we can measure the average growth of yeast strains at each marker, and further calculate and plot the average of these averages to investigate the overall cellular growth for each genotype in the different media. We also plot the standard deviation of each strain growth to illustrate how much the growth values differ from the average growth value. 
+```{r}
+
+#merge for data for later plotting
+genotype_dt <- as.data.table(genotype)
+growth_dt <- as.data.table(growth)
+
+base <- merge(genotype_dt, growth_dt)
+base_long <- melt(base, id.vars = c("strain","YPD", "YPD_BPS", "YPD_Rapa", "YPE" ,"YPMalt"))
+
+#adding all avarages in one table
+avg <- base_long[,mean(YPD, na.rm = TRUE), by = .(variable, value)]
+avg[,"AVG_APD_BPS" := base_long[,mean(YPD_BPS, na.rm = TRUE), by = .(variable, value)][,3]]
+avg[,"AVG_YPD_Rapa" := base_long[,mean(YPD_Rapa, na.rm = TRUE), by = .(variable, value)][,3]]
+avg[,"AVG_YPE" := base_long[,mean(YPE, na.rm = TRUE), by = .(variable, value)][,3]]
+avg[,"AVG_YPMalt" := base_long[,mean(YPMalt, na.rm = TRUE), by = .(variable, value)][,3]]
+
+#set names for data columns
+setnames(avg, old = c("variable","value", "V1"), new=c("ID","Genome","AVG_YPD"))
+
+#melt table
+
+avg_long <- melt(avg,id.variable = "Nutrition", measure.name = 3:7)
+#avg_long[, mean(value, na.rm = TRUE), by = Genome]
+
+#derive marker avarages and standard deviationn for each nutrition
+avg_nutrition_markers <- avg[,.(mean(AVG_YPD),mean(AVG_APD_BPS),mean(AVG_YPD_Rapa), mean(AVG_YPE), mean(AVG_YPMalt)), by = Genome]
+sd_nutrition_markers <- avg[,.(sd(AVG_YPD),sd(AVG_APD_BPS),sd(AVG_YPD_Rapa), sd(AVG_YPE), sd(AVG_YPMalt)), by = Genome]
+
+setnames(sd_nutrition_markers, old = 2:6, new = c("AVG_YPD","AVG_APD_BPS","AVG_YPD_Rapa", "AVG_YPE", "AVG_YPMalt"))
+setnames(avg_nutrition_markers, old = 2:6, new = c("AVG_YPD","AVG_APD_BPS","AVG_YPD_Rapa", "AVG_YPE", "AVG_YPMalt"))
+
+#plot
+avg_n_merkers_long <- melt(avg_nutrition_markers, id.vars = "Genome")
+sd_n_merkers_long <- melt(sd_nutrition_markers, id.vars = "Genome")
+
+#plot
+ggplot(data = avg_n_merkers_long, aes(x=variable, y=value,fill = Genome)) + geom_col(position = "dodge") + 
+  geom_errorbar(aes(ymax=value + sd_n_merkers_long$value, ymin=value - sd_n_merkers_long$value), position = "dodge") +
+  outlook +ylab("Growth") + xlab("") + ggtitle("Average growth for all markers per environment and genome")
+
+
+```
+
+(DOESNT IT SHOW EXACTLY THE SAME INFORMATION AS FIG: GROWTH RATE BY MEDIA? I MEAN I CANT THINK OF ANY OTHER INFO :( SHOULD WE INCLUDE THIS THEN? LETS DISCUSS!)
+
+  ---
+  
+(ANOTHER OPTION)
+Plotting median growth per marker in YPD
+```{r}
+#adding all median in one table
+med <- base_long[,median(YPD, na.rm = TRUE), by = .(variable, value)]
+med[,"MEDIAN_APD_BPS" := base_long[,median(YPD_BPS, na.rm = TRUE), by = .(variable, value)][,3]]
+med[,"MEDIAN_YPD_Rapa" := base_long[,median(YPD_Rapa, na.rm = TRUE), by = .(variable, value)][,3]]
+med[,"MEDIAN_YPE" := base_long[,median(YPE, na.rm = TRUE), by = .(variable, value)][,3]]
+med[,"MEDIAN_YPMalt" := base_long[,median(YPMalt, na.rm = TRUE), by = .(variable, value)][,3]]
+
+#set names for data columns
+setnames(med, old = c("variable","value", "V1"), new=c("ID","Genome","MEDIAN_YPD"))
+
+#Plotting median growth per marker in YPD
+p <- ggplot(data = med, aes(x = ID, y = MEDIAN_YPD, color = Genome)) +       
+  geom_line(aes(group = Genome)) + ylab("Median Growth Rate") + xlab("Genetic Markers") +
+  ggtitle("Median growth per genetic markers in YPD (Glucose)") + outlook
+
+ggplotly(p)
+```
+  
+  ---
+  
+We can further look at he distribution of Cellular growth for different genetic markers in maltose (YPMalt). Note that we're keeping the environment/medium constant but varying the marker position.
+
+(DISCUSS!!
+Salma, how about we display the marker coordinates at xlab? 
++ declutter the plot by using color to show lab vs wild maybe?
++ Title?)
+
+```{r}
+# markers/genome medians
+medians <- base_long[, lapply(.SD, median, na.rm = TRUE),
+                       .SDcols = c("YPD", "YPD_BPS", "YPD_Rapa", "YPE", "YPMalt"),
+                       by = .(marker = variable, genome = value)]
+
+medians_diff <- medians[, lapply(.SD, subtract),
+                            .SDcols = c("YPD"),
+                            by = marker]
+
+ypd_diff <- medians[genome == "Wild isolate", YPD := -1 * YPD][, .(YPD = sum(YPD)), marker]
+ypd_bps_diff <- medians[genome == "Wild isolate", YPD_BPS := -1 * YPD_BPS][, .(YPD_BPS = sum(YPD_BPS)), marker]
+ypd_rapa_diff <- medians[genome == "Wild isolate", YPD_Rapa := -1 * YPD_Rapa][, .(YPD_Rapa = sum(YPD_Rapa)), marker]
+ype_diff <- medians[genome == "Wild isolate", YPE := -1 * YPE][, .(YPE = sum(YPE)), marker]
+ypmalt_diff <- medians[genome == "Wild isolate", YPMalt := -1 * YPMalt][, .(YPMalt = sum(YPMalt)), marker]
+
+# markers grid plot
+plots = lapply(392:400, function(.x) ggplot(growth, aes((genotype[, .x])[strain], YPMalt)) + geom_boxplot())
+do.call(grid.arrange,  plots)
+
+```
+
+Here, we can note that **there are some genetic markers that associate with strong variations in cellular growth.**
+
+  ---
+
+Next, we can investigate **if genotype affects fitness independently of Environment** to understand how good a particular genotype is at leaving offspring in the next generation in relation to how good the other genotype is, irrespective of the surrounding environmental influences.
+
+Let's begin by plotting the distribution of Cellular growth for genotype at chr07, postion 1069229.
+
+```{r}
+mygeno <- genotype[, which(marker$chrom=="chr07" & marker$start== 1069229)]
+names(mygeno) <- genotype$strain
+
+#convert growth to a data table
+growth_dt <- as.data.table(growth)
+
+#style specifications
+pbox <- geom_boxplot() 
+x_lab <- xlab("") 
+
+##create plot for grid
+p1 <- ggplot(data = growth , aes(x=mygeno, y=YPD)) + pbox  + x_lab +outlook
+p2 <- ggplot(data = growth , aes(x=mygeno, y=YPD_BPS)) + pbox  + x_lab +outlook
+p3 <- ggplot(data = growth , aes(x=mygeno, y=YPD_Rapa)) + pbox + x_lab +outlook
+p4 <- ggplot(data = growth , aes(x=mygeno, y=YPE)) + pbox + x_lab +outlook
+p5 <- ggplot(data = growth , aes(x=mygeno, y=YPMalt)) + pbox + x_lab +outlook
+
+#assemble plot on grid
+grid.arrange(p1,p2,p3,p4,p5, nrow=2, top=textGrob("Growth Rate by Media for Genotype at Chr07, position 1069229", gp=gpar(fontsize=15,font=8)))
+
+```
+
+We note that there is a variation in cellular growth in maltose (YPMalt) for genotype at chr07, postion 1069229 but the pattern is not the same in other media. Let's look at another genetic marker.
+
+```{r}
+mygeno <- genotype[, which(marker$chrom=="chr01" & marker$start== 29161)]
+names(mygeno) <- genotype$strain
+
+#convert growth to a data table
+growth_dt <- as.data.table(growth)
+
+#style specifications
+pbox <- geom_boxplot() 
+x_lab <- xlab("") 
+outlook <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+##create plot for grid
+p1 <- ggplot(data = growth , aes(x=mygeno, y=YPD)) + pbox  + x_lab +outlook
+p2 <- ggplot(data = growth , aes(x=mygeno, y=YPD_BPS)) + pbox  + x_lab +outlook
+p3 <- ggplot(data = growth , aes(x=mygeno, y=YPD_Rapa)) + pbox + x_lab +outlook
+p4 <- ggplot(data = growth , aes(x=mygeno, y=YPE)) + pbox + x_lab +outlook
+p5 <- ggplot(data = growth , aes(x=mygeno, y=YPMalt)) + pbox + x_lab +outlook
+
+#assemble plot on grid
+grid.arrange(p1,p2,p3,p4,p5, nrow=2, top=textGrob("Growth Rate by Media for Genotype at Chr01, position 29161", gp=gpar(fontsize=15,font=8)))
+
+
+```
+
+Again, we note that the pattern of cellular growth per Genotype varies in each medium, showing that the growth is strongly environment-specific and that the genotype does not affect fitness independently of environment.
+
+
+
+  ---
+
+**About the Gene Expression Dataset**
+
+The second dataset provided in this case study is about Gene Expressions (the production of RNA for a given gene). RNA is produced during the molecular process of transcription and depends on the environment or the genotype.
+
+**Load and examine the Gene Expression Dataset**
+```{r}
+#set path
+gene_file <- file.path(DATA_DIR, 'gene.txt')
+expression_file <- file.path(DATA_DIR, 'expression.txt')
+
+#read in data
+gene <- read.delim(gene_file)
+expression <- fread(expression_file)
+
+```
+
+Let's have a first look at a summary of the columns in the expression file:
+```{r}
+#str(expression)
+dim(expression)
+
+```
+
+Some key things to notice here are:
+
+* There are 8382 rows or cases in the data set representing the genes. 
+* The data set has 183 variables or columns representing the RNA expression level (on a logaritmic scale) for 8,382 genes in 183 samples, where one sample is one segregant grown in one media. Unlike for growth rate, obtaining transcription level is expensive. Note that we don't have the data for every segregant grown in every media.
+
+Next, the genes file shows the genomic coordinates of the genes (chromosome, start and stop, strand, type, source, novel, name). 
+
+```{r}
+str(gene)
+```
+
+Note that we have four types of genes in total with 2 different novelity levels and 4 sources. 
+
+Firstly, Let's investigate **if the gene expression under genetic or environmental control**, and if it is more influenced by one or the other. For this, we can plot the RNA/Gene Expression for a particular segregant at a chromosome in different media. Take segregant 'seg_45C' in YPMalt (Maltose), YPE (Ethanol) and YPD_BPS (low iron) at Chromosome 01.
+
+```{r}
+#select columns
+indx <- grepl('seg_45C', colnames(expression))
+
+#data for plot
+heat_map <- expression[which(gene$chrom=="chr01")][,indx, with = FALSE]
+heat_map[,rown := rownames(heat_map)]
+heat_map_long <- melt(heat_map, id.vars = "rown")
+
+outlook <- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                 panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+ggplot(heat_map_long, aes(x=rown , y=variable)) +
+  geom_tile(aes(fill = value), color = "white") + outlook  +ylab("") + xlab("Genes") + 
+  ggtitle("RNA for Cromosome 1: Segregant 47C")
+
+```
+
+Note how the color (RNA value) changes over Genes, showing that the amount of RNA produced at each gene differ and is under genetic control. The color (RNA Value) also changes from one medium to another for any given gene, and is therefore under environment control as well. It can also be clearly seen that the RNA value differs more per gene than per medium, showing that **transcription is affected more by genetic than environmental influences for chromosome 01 of segregant 47C**.
+
