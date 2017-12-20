@@ -210,7 +210,7 @@ query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
 
 # markers grid plot
 plots = lapply(query_markers$id,
-               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPMalt)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "Marker ",.x)))
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPMalt)) + geom_boxplot() + outlook + xlab("") + ggtitle(sub("mrk_", "Marker ",.x)))
 do.call(grid.arrange,  plots)
 
 ```
@@ -238,7 +238,7 @@ query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
 
 # markers grid plot
 plots = lapply(query_markers$id,
-               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPD)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "Marker ",.x)))
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPD)) + geom_boxplot() +  outlook + xlab("") + ggtitle(sub("mrk_", "Marker ",.x)))
 do.call(grid.arrange,  plots)
 
 # compute affected markers
@@ -249,7 +249,7 @@ query_markers <- inner_join(marker, markers_affected_by_genotype, by="id")
 
 # markers grid plot
 plots = lapply(query_markers$id,
-               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPE)) + geom_boxplot() + xlab("Genotype") + ggtitle(sub("mrk_", "Marker ",.x)))
+               function(.x) ggplot(growth, aes(( genotype[, .x])[strain], YPE)) + geom_boxplot() +  outlook + xlab("") + ggtitle(sub("mrk_", "Marker ",.x)))
 do.call(grid.arrange,  plots)
 ```
 
